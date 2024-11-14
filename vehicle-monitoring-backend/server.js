@@ -3,6 +3,7 @@ const mongoURI = process.env.MONGO_URI;
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -80,6 +81,12 @@ app.get('/api/vehicles/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error fetching vehicle data' });
     }
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashbord.html'));
 });
 
 // Start the server

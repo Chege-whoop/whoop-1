@@ -1,5 +1,5 @@
 // Define the backend API endpoint
-const apiEndpoint = 'http://localhost:5000/api/vehicles';
+const apiEndpoint = 'http://localhost:5500/api/vehicles';
 
 // Fetch vehicle data from the backend and update the dashboard
 async function fetchVehicleData() {
