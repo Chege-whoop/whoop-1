@@ -22,6 +22,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 const vehicleSchema = new mongoose.Schema({
     vehicleId: String,
     speed: Number,
+    //"location": { "latitude": 12.9716, "longitude": 77.5946 },
     tamperStatus: Boolean,
     driverPhoneNumber: String,
     timestamp: { type: Date, default: Date.now }
@@ -87,6 +88,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashbord.html'));
+});
+
+const VehicleData = mongoose.model('VehicleData', vehicleSchema);
+
+// API to fetch historical data for a vehicle
+app.get('/vehicle-history/:vehicleId', async (req, res) => {
+  const { vehicleId } = req.params;
+
+  try {
+    const data = await VehicleData.find({ vehicleId }).sort({ timestamp: 1 });
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching vehicle data' });
+  }
 });
 
 // Start the server

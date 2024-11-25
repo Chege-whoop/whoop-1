@@ -42,3 +42,18 @@ exports.deleteVehicle = async (req, res) => {
         res.status(500).json({ message: 'Error deleting vehicle data' });
     }
 };
+
+const Vehicle = require('../models/Vehicle');
+
+// Fetch historical data for a specific vehicle
+exports.getHistoricalData = async (req, res) => {
+  const { vehicleId } = req.params;
+
+  try {
+    const data = await Vehicle.getHistoricalData(vehicleId);
+    res.json(data); // Send data as JSON response
+  } catch (error) {
+    console.error("Error fetching historical data:", error);
+    res.status(500).json({ error: 'Error fetching historical data' });
+  }
+};

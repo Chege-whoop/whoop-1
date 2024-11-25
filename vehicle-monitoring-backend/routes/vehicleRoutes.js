@@ -18,4 +18,7 @@ router.put('/:id', vehicleController.updateVehicle);
 // DELETE a vehicle by ID
 router.delete('/:id', vehicleController.deleteVehicle);
 
+// Route to fetch historical data for a specific vehicle
+router.get('/vehicle-history/:vehicleId', vehicleController.getHistoricalData);
+
 module.exports = router;
