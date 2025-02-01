@@ -4,6 +4,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const User = require('./models/User');
+const authRoutes = require('./routes/authRoutes');
+const Vehicle = require('./models/Vehicle'); // Import Vehicle model
+const authMiddleware = require('./middleware/authMiddleware');
 
 dotenv.config();
 
@@ -13,21 +17,31 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+app.use(express.urlencoded({extended:true}))
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Use auth routes
+app.use('/api/auth', authRoutes);
+
+mongoose.set('debug', true);
+
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
 
-// Vehicle model schema
-const vehicleSchema = new mongoose.Schema({
-    vehicleId: String,
-    speed: Number,
-    //"location": { "latitude": 12.9716, "longitude": 77.5946 },
-    tamperStatus: Boolean,
-    driverPhoneNumber: String,
-    timestamp: { type: Date, default: Date.now }
+app.get('/api/dashboard', authMiddleware, (req, res) => {
+    res.json({ message: `Welcome, User ID: ${req.user.userId}` });
 });
-const Vehicle = mongoose.model('Vehicle', vehicleSchema);
+
+app.get('/signup', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signup.html')); // Ensure 'signup.html' exists
+});
+
+// Serve login page (you can create a login page as well)
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));// Ensure 'login.html' exists
+});
 
 // API Endpoints
 
@@ -70,38 +84,6 @@ app.delete('/api/vehicles/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error deleting vehicle data' });
     }
-});
-
-app.get('/api/vehicles/:id', async (req, res) => {
-    try {
-        const vehicle = await Vehicle.findById(req.params.id); // findById uses req.params.id
-        if (!vehicle) {
-            return res.status(404).json({ message: 'Vehicle not found' });
-        }
-        res.json(vehicle);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching vehicle data' });
-    }
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashbord.html'));
-});
-
-const VehicleData = mongoose.model('VehicleData', vehicleSchema);
-
-// API to fetch historical data for a vehicle
-app.get('/vehicle-history/:vehicleId', async (req, res) => {
-  const { vehicleId } = req.params;
-
-  try {
-    const data = await VehicleData.find({ vehicleId }).sort({ timestamp: 1 });
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching vehicle data' });
-  }
 });
 
 // Start the server

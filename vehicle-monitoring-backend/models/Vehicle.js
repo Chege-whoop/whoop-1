@@ -10,9 +10,10 @@ const vehicleSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now }
 });
 
-
 vehicleSchema.statics.getHistoricalData = async function (vehicleId) {
     return this.find({ vehicleId }).sort({ timestamp: 1 });
   };
 
-module.exports = mongoose.model('Vehicle', vehicleSchema);
+// module.exports = mongoose.model('Vehicle', vehicleSchema);
+const Vehicle = mongoose.model('Vehicle', vehicleSchema);
+module.exports = Vehicle;
