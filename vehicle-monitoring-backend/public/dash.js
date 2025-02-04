@@ -17,7 +17,7 @@ async function fetchVehicleData() {
 }
 
 // Update the dashboard with vehicle data
-function updateDashboard(vehicleData) {
+        function updateDashboard(vehicleData) {
     const tableBody = document.getElementById("vehicle-data");
     tableBody.innerHTML = "";  // Clear previous data
 

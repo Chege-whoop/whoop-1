@@ -1,11 +1,9 @@
 const express = require('express');
 const { body } = require('express-validator');
-const { signup, login } = require('../controllers/authController');
+const { signup, login} = require('../controllers/authController');
 
 const router = express.Router();
 
-// Signup route
-// router.post();
 // Signup route
 router.post(
     '/signup',
@@ -21,7 +19,7 @@ router.post(
 router.post(
     '/login',
     [
-        body('email').notEmpty().withMessage('Username is required'),
+        body('email').notEmpty().withMessage('Email is required'),
         body('password').notEmpty().withMessage('Password is required'),
     ],
     login

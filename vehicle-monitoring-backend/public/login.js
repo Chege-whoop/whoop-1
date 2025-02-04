@@ -7,12 +7,12 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     console.log('attempting login..');
 
     try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('/api/auth/login', {  // Add the fetch request here
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username:email, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (!response.ok) {
@@ -22,9 +22,9 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
         const data = await response.json();
         alert('Login successful!');
         localStorage.setItem('token', data.token); // Store JWT token for authentication
-        window.location.href = '/dashboard.html'; // Redirect to dashboard
+        window.location.href = '/dashbord.html'; // Redirect to dashboard
     } catch (error) {
-        console.error(error);
+        console.log(error);
         alert('Error: ' + error.message);
     }
 });

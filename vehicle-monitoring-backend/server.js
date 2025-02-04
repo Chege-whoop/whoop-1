@@ -6,14 +6,15 @@ const dotenv = require('dotenv');
 const path = require('path');
 const User = require('./models/User');
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const Vehicle = require('./models/Vehicle'); // Import Vehicle model
-const authMiddleware = require('./middleware/authMiddleware');
+const { authMiddleware, adminMiddleware } = require('./middleware/authMiddleware');
+// const adminMiddleware = require('./middleware/authMiddleware');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 // Middleware to parse JSON bodies
 app.use(express.json());
 
@@ -30,8 +31,15 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
 
-app.get('/api/dashboard', authMiddleware, (req, res) => {
-    res.json({ message: `Welcome, User ID: ${req.user.userId}` });
+ app.use('/api/admin',authMiddleware, adminMiddleware, adminRoutes);
+
+    // test api
+app.get('/api/auth', (req, res) => {
+    res.json({ message: 'API is working' });
+});
+
+app.get('/api/dashbord', authMiddleware, (req, res) => {
+    res.json({ message: `Welcome, User ID: ${req.user.user_Id}` });
 });
 
 app.get('/signup', (req, res) => {

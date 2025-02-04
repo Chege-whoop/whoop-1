@@ -4,24 +4,42 @@ document.getElementById('signupForm').addEventListener('submit', async (event) =
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const adminkey = document.getElementById('adminkey')?.value.trim(); // Optional admin key
 
-    console.log('attempting signup..');
+    console.log('Attempting signup..');
 
     try {
-        const response = await fetch('/api/auth/signup', {
+        let endpoint = '/api/auth/signup'; // Default endpoint for regular users
+        let requestBody = { username, email, password };
+
+        // If admin key is provided, use the admin signup API
+        if (adminkey) {
+            endpoint = '/api/admin/signup';
+            requestBody.adminkey = adminkey;
+        }
+
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, email, password }),
+            body: JSON.stringify(requestBody),
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            throw new Error('Signup failed!');
+            throw new Error(data.message || 'Signup failed!');
         }
 
         alert('Signup successful!');
-        window.location.href = '/login.html'; // Redirect to dashbord page
+
+        // Redirect based on API response
+        if (adminkey) {
+            window.location.href = '/admin.html'; // Redirect admin users
+        } else {
+            window.location.href = '/login.html'; // Redirect regular users
+        }
     } catch (error) {
         console.error(error);
         alert('Error: ' + error.message);

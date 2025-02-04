@@ -7,7 +7,7 @@ const vehicleController = require('../controllers/vehicleController');
 // Define routes and map them to controller functions
 
 // GET all vehicles
-router.get('/', vehicleController.getAllVehicles);
+router.get('/api/vehicle', vehicleController.getAllVehicles);
 
 // POST a new vehicle
 router.post('/', vehicleController.addVehicle);

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
@@ -5,6 +6,7 @@ const User = require('../models/User');
 //bodyparser required
 
 const JWT_SECRET = process.env.JWT_SECRET || 'i love cloud based computing and IOT'; // Store securely in .env
+const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'adminsonly';
 
 
 // User signup controller
@@ -15,7 +17,7 @@ exports.signup = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password } = req.body;
+    const { username, email, password, adminKey } = req.body;
 
     try {
         // Check if user exists
@@ -29,12 +31,14 @@ exports.signup = async (req, res) => {
         console.log('Hashing password...');
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const isAdmin = adminkey === ADMIN_SECRET_KEY;
+
         // Save new user
         console.log('Saving new user...');
-        const user = new User({ username, email, password: hashedPassword });
+        const user = new User({ username, email, password: hashedPassword, isAdmin: isAdmin || false });
         await user.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json({ message: 'User registered successfully', isAdmin });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -64,7 +68,9 @@ exports.login = async (req, res) => {
         }
 
         // Generate token
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+
+        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ token, message: 'Login successful' });
     } catch (error) {
