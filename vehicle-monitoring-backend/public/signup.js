@@ -36,9 +36,9 @@ document.getElementById('signupForm').addEventListener('submit', async (event) =
 
         // Redirect based on API response
         if (adminkey) {
-            window.location.href = '/admin.html'; // Redirect admin users
+            window.location.href = '/dashbord.html'; // Redirect admin users
         } else {
-            window.location.href = '/login.html'; // Redirect regular users
+            window.location.href = '/profile.html'; // Redirect regular users
         }
     } catch (error) {
         console.error(error);

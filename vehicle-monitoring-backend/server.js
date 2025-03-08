@@ -4,12 +4,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-const User = require('./models/User');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const Vehicle = require('./models/Vehicle'); // Import Vehicle model
+const logsRoutes = require('./routes/logsRoutes')
+const userRoutes = require('./routes/userRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const communityRoutes = require('./routes/communityRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
+const locationRoutes = require('./routes/locationRoutes');
+const messageRoutes = require('./routes/messageRoutes');
 const { authMiddleware, adminMiddleware } = require('./middleware/authMiddleware');
-// const adminMiddleware = require('./middleware/authMiddleware');
 
 dotenv.config();
 
@@ -23,6 +27,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Use auth routes
 app.use('/api/auth', authRoutes);
+// use admin routes
+app.use('/api/admin', adminRoutes);
+// user profile routes
+app.use('/api/profile', profileRoutes);
+// API Routes for vehicle registration
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/user', userRoutes);  
+app.use('/api/logs', logsRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/location', locationRoutes);
+app.use('/api/messages', messageRoutes);
 
 mongoose.set('debug', true);
 
@@ -31,67 +46,29 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('MongoDB connection error:', error));
 
- app.use('/api/admin',authMiddleware, adminMiddleware, adminRoutes);
-
     // test api
 app.get('/api/auth', (req, res) => {
     res.json({ message: 'API is working' });
 });
 
+// Test Route for Admins Only
+app.get('/api/admin', authMiddleware, adminMiddleware, (req, res) => {
+    res.json({ message: 'Admin access granted!' });
+});
+
 app.get('/api/dashbord', authMiddleware, (req, res) => {
-    res.json({ message: `Welcome, User ID: ${req.user.user_Id}` });
+    res.json({ message: `Welcome, User ID: ${req.user.userId}` });
 });
 
 app.get('/signup', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'signup.html')); // Ensure 'signup.html' exists
 });
 
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
 // Serve login page (you can create a login page as well)
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));// Ensure 'login.html' exists
-});
-
-// API Endpoints
-
-// 1. Get all vehicles
-app.get('/api/vehicles', async (req, res) => {
-    try {
-        const vehicles = await Vehicle.find();
-        res.json(vehicles);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching vehicle data' });
-    }
-});
-
-// 2. Add a new vehicle record
-app.post('/api/vehicles', async (req, res) => {
-    try {
-        const newVehicle = new Vehicle(req.body);
-        await newVehicle.save();
-        res.status(201).json(newVehicle);
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding vehicle data' });
-    }
-});
-
-// 3. Update a vehicle record by ID
-app.put('/api/vehicles/:id', async (req, res) => {
-    try {
-        const updatedVehicle = await Vehicle.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(updatedVehicle);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating vehicle data' });
-    }
-});
-
-// 4. Delete a vehicle record by ID
-app.delete('/api/vehicles/:id', async (req, res) => {
-    try {
-        await Vehicle.findByIdAndDelete(req.params.id);
-        res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting vehicle data' });
-    }
 });
 
 // Start the server

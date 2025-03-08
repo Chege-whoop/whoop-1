@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Admin Panel</h2>
+    <button onclick="getUsers()">Load Users</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+    </table>
+
+    <script>
+        async function getUsers() {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/admin/users', {
+                headers: { 'Authorization': token }
+            });
+            const users = await response.json();
+
+            let tableContent = '';
+            users.forEach(user => {
+                tableContent += `<tr>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td><button onclick="deleteUser('${user._id}')">Delete</button></td>
+                </tr>`;
+            });
+
+            document.getElementById('userTable').innerHTML = tableContent;
+        }
+
+        async function deleteUser(userId) {
+            const token = localStorage.getItem('token');
+            await fetch(`/api/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': token }
+            });
+            alert('User deleted!');
+            getUsers();  // Refresh user list
+        }
+    </script>
+</body>
+</html>

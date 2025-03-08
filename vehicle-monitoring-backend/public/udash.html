@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="udash.css">
+</head>
+<body>
+    <nav>
+        <button onclick="window.location.href='/logs.html'">Logs</button>
+        <button onclick="window.location.href='/location.html'">maps</button>
+        <button onclick="window.location.href='/community.html'">Community</button>
+        <button id="logoutBtn">Logout</button>
+    </nav>
+
+    <div class="profile-container">
+        <img id="profileImage" src="/images/default-image.png" alt="User Profile">
+        <h2 id="userName"></h2>
+        <p><strong>Phone:</strong> <span id="driverPhone"></span></p>
+        <p><strong>Vehicle Type:</strong> <span id="vehicleName"></span></p>
+        <p><strong>Kind:</strong> <span id="vehicleType"></span></p>
+        <p><strong>plateNumber:</strong> <span id="plateNumber"></span></p>
+    </div>
+
+    <script src="udash.js"></script>
+    <script src="logout.js"></script> 
+</body>
+</html>

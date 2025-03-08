@@ -1,19 +1,14 @@
-// models/Vehicle.js
-
 const mongoose = require('mongoose');
 
-const vehicleSchema = new mongoose.Schema({
-    vehicleId: { type: String, required: true },
-    speed: { type: Number, required: true },
-    tamperStatus: { type: Boolean, default: false },
-    driverPhoneNumber: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now }
+const VehicleSchema = new mongoose.Schema({
+    ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    vehicleName: { type: String, required: true },
+    driverPhone: { type: String, required: true },
+    vehicleType: { type: String, required: true },
+    plateNumber: { type: String, required: true, unique: true },
+    currentSpeed: { type: Number, required: true },
+    tamperState: { type: String, enum: ['good', 'moderate', 'critical'], required: true },
+    profileImage: { type: String } // Stores image path
 });
 
-vehicleSchema.statics.getHistoricalData = async function (vehicleId) {
-    return this.find({ vehicleId }).sort({ timestamp: 1 });
-  };
-
-// module.exports = mongoose.model('Vehicle', vehicleSchema);
-const Vehicle = mongoose.model('Vehicle', vehicleSchema);
-module.exports = Vehicle;
+module.exports = mongoose.model('Vehicle', VehicleSchema);

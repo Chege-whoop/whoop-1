@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Location</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h2>Live Vehicle Tracking</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- <script>
+        // const token = localStorage.getItem('token'); // Get from localStorage
+    
+        // if (!token) {
+        //     alert("User ID not found! Please log in again.");
+        // }
+    
+        const map = L.map('map').setView([0, 0], 13);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+    
+        let marker = L.marker([0, 0]).addTo(map);
+    
+        async function fetchLocation() {
+            try {
+                if (!userId) return;
+    
+                const response = await fetch(`/api/location/${userId}`);
+                const data = await response.json();
+    
+                if (data.latitude && data.longitude) {
+                    const { latitude, longitude } = data;
+                    map.setView([latitude, longitude], 13);
+                    marker.setLatLng([latitude, longitude]);
+                }
+            } catch (error) {
+                console.error("Error fetching location:", error);
+            }
+        }
+    
+        setInterval(fetchLocation, 5000); // Fetch every 5 seconds
+    </script> -->
+    <script src ="vlocation.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="vehicle-form">
+        <h2>Vehicle Registration Form</h2>
+        <form id="vehicleForm" enctype="multipart/form-data">
+            <!-- Profile Image Upload -->
+            <div class="form-group">
+                <label for="profileImage">Profile Image:</label>
+                <div class="image-preview" id="imagePreview"></div>
+                <input type="file" id="profileImage" name="profileImage" accept="image/*" required>
+            </div>
+
+            <!-- Vehicle Details -->
+            <div class="form-group">
+                <label for="vehicleName">Vehicle Name:</label>
+                <input type="text" id="vehicleName" name="vehicleName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="driverPhone">Driver Phone Number:</label>
+                <input type="tel" id="driverPhone" name="driverPhone" 
+                       pattern="[0-9]{10}" placeholder="0712345678" required>
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleType">Vehicle Type:</label>
+                <select id="vehicleType" name="vehicleType" required>
+                    <option value="">Select Type</option>
+                    <option value="personal">Personal</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="public">Public Service</option>
+                    <option value="heavy">Heavy Duty</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="plateNumber">Plate Number:</label>
+                <input type="text" id="plateNumber" name="plateNumber" 
+                       pattern="[A-Z0-9]{3,10}" placeholder="KAA 123A" required>
+            </div>
+
+            <div class="form-group">
+                <label for="currentSpeed">Current Speed (km/h):</label>
+                <input type="number" id="currentSpeed" name="currentSpeed" 
+                       min="0" max="200" step="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tamperState">Vehicle Health Status:</label>
+                <select id="tamperState" name="tamperState" required>
+                    <option value="good">Good</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="critical">Critical</option>
+                </select>
+            </div>
+
+            <button type="submit">Register Vehicle</button>
+        </form>
+    </div>
+
+    <button id="logoutBtn">Logout</button>
+    <script src="profile.js"></script> 
+    <script src="logout.js"></script> 
+</body>
+</html>

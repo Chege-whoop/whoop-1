@@ -1,24 +1,16 @@
-// routes/VehicleRoutes.js
-
 const express = require('express');
+// const vehicleController = require('../controllers/vehicleController');
+const { upload, registerVehicle, allVehicles, getVehicleById, updateVehicle, deleteVehicle } = require('../controllers/vehicleController');
+const { authMiddleware } = require('../middleware/authMiddleware');
+
 const router = express.Router();
-const vehicleController = require('../controllers/vehicleController');
-
-// Define routes and map them to controller functions
-
-// GET all vehicles
-router.get('/api/vehicle', vehicleController.getAllVehicles);
-
-// POST a new vehicle
-router.post('/', vehicleController.addVehicle);
-
-// PUT (update) a vehicle by ID
-router.put('/:id', vehicleController.updateVehicle);
-
-// DELETE a vehicle by ID
-router.delete('/:id', vehicleController.deleteVehicle);
-
-// Route to fetch historical data for a specific vehicle
-router.get('/vehicle-history/:vehicleId', vehicleController.getHistoricalData);
+// console.log('Authenticated User:', req.user);
+// Register vehicle (with authentication & image upload)
+router.post('/register', authMiddleware, upload.single("profileImage"), registerVehicle);
+router.get('/allVehicles', allVehicles);
+router.get('/getVehicleById/:id', getVehicleById);
+router.put('/updateVehicle/:id', upload.single("profileImage"), updateVehicle);
+router.delete('/:id', deleteVehicle);
+// router.post('/deleteVehicle', vehicleController.deleteVehicle);
 
 module.exports = router;

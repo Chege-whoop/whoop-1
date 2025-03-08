@@ -6,7 +6,6 @@ const User = require('../models/User');
 //bodyparser required
 
 const JWT_SECRET = process.env.JWT_SECRET || 'i love cloud based computing and IOT'; // Store securely in .env
-const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY || 'adminsonly';
 
 
 // User signup controller
@@ -17,7 +16,7 @@ exports.signup = async (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password, adminKey } = req.body;
+    const { username, email, password } = req.body;
 
     try {
         // Check if user exists
@@ -31,19 +30,18 @@ exports.signup = async (req, res) => {
         console.log('Hashing password...');
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const isAdmin = adminkey === ADMIN_SECRET_KEY;
-
         // Save new user
         console.log('Saving new user...');
-        const user = new User({ username, email, password: hashedPassword, isAdmin: isAdmin || false });
+        const user = new User({ username, email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ message: 'User registered successfully', isAdmin });
+        res.status(201).json({ message: 'User registered successfully'});
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 // User login controller
 exports.login = async (req, res) => {
@@ -68,13 +66,32 @@ exports.login = async (req, res) => {
         }
 
         // Generate token
-
-
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
 
         res.json({ token, message: 'Login successful' });
+
+        console.log("🔑 Token being sent:", token);
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+exports.logout = (req, res) => {
+    res.clearCookie('token'); // Clear token cookie (if using cookies)
+    res.status(200).json({ message: 'Logout successful' });
+};
+
+// exports.adminLogout = (req, res) => {
+//     req.session.destroy((err) => {
+//         if (err) {
+//             console.error("Logout error:", err);
+//             return res.status(500).json({ message: "Error logging out" });
+//         }
+//         res.clearCookie("connect.sid"); // Clear session cookie
+//         res.status(200).json({ message: "Admin successfully logged out" });
+//     });
+// };
+
+
